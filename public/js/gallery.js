@@ -2,7 +2,7 @@ const Gallery = {
   _lightboxOpen: false,
   _images: [],
 
-  async render() {
+  render() {
     return `
     <div class="section-page view">
       <div class="section-header reveal">

@@ -1,11 +1,5 @@
 const Home = {
-  async render() {
-    let stats, reviews;
-    try {
-      [stats, reviews] = await Promise.all([API.getStats(), API.getReviews()]);
-    } catch { stats = { services: 0, appointments: 0, reviews: 0, avgRating: 0, upcomingAppointments: 0 };
-      reviews = { reviews: [], stats: { avg: 0, count: 0 } }; }
-
+  render() {
     return `
     <section class="hero view" id="inicio">
       <canvas id="heroCanvas" class="hero-canvas"></canvas>
@@ -37,15 +31,15 @@ const Home = {
             <div class="hero-stat-label">Años de experiencia</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-number" id="statServices">${stats.services || 0}</div>
+            <div class="hero-stat-number" id="statServices">0</div>
             <div class="hero-stat-label">Servicios</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-number" id="statRepairs">${stats.appointments || 0}</div>
+            <div class="hero-stat-number" id="statRepairs">0</div>
             <div class="hero-stat-label">Reparaciones</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-number">${(reviews.stats?.avg || 0).toFixed(1)}</div>
+            <div class="hero-stat-number" id="statRating">0.0</div>
             <div class="hero-stat-label">Calificación ★</div>
           </div>
         </div>
@@ -73,15 +67,7 @@ const Home = {
           <h2 class="section-title">Lo que dicen nuestros clientes</h2>
         </div>
         <div id="homeReviewsList" class="reviews-list" style="max-width:600px;margin:0 auto">
-          ${reviews.reviews?.length ? reviews.reviews.slice(0, 3).map(r => `
-            <div class="review-card review-card-mini reveal">
-              <div class="review-card-header">
-                <span class="review-card-name">${Utils.escapeHtml(r.clientName)}</span>
-                ${Utils.starsHtml(r.rating, 16)}
-              </div>
-              <p class="review-card-text">${Utils.escapeHtml(r.comment)}</p>
-            </div>
-          `).join('') : '<div class="empty-state">Sé el primero en dejar una reseña</div>'}
+          <div class="loading-state"><div class="loading-spinner"></div></div>
         </div>
         <div style="text-align:center;margin-top:24px" class="reveal">
           <a href="#/contacto" class="btn-primary" data-route="contact">Dejanos tu opinión</a>
@@ -91,39 +77,54 @@ const Home = {
     `;
   },
 
-  async afterRender() {
+  afterRender() {
     Animations.initHeroCanvas();
+    this.startTyping();
+    this.loadStats();
+    this.loadServices();
+    this.loadReviews();
+  },
+
+  startTyping() {
     const texts = ['Diagnóstico computarizado', 'Reparación de motores', 'Electricidad del automóvil', 'Escaneo con scanner'];
     let idx = 0;
     const el = document.getElementById('typingText');
-    if (el) {
-      function typeLoop() {
-        Animations.typeWriter(el, texts[idx], 60, () => {
-          setTimeout(() => {
-            let i = texts[idx].length;
-            const cursorSpan = el.querySelector('.cursor');
-            function erase() {
-              if (i > 0) {
-                el.innerHTML = texts[idx].substring(0, i - 1);
-                if (cursorSpan) el.appendChild(cursorSpan);
-                i--;
-                setTimeout(erase, 25);
-              } else {
-                idx = (idx + 1) % texts.length;
-                setTimeout(typeLoop, 500);
-              }
+    if (!el) return;
+    function typeLoop() {
+      Animations.typeWriter(el, texts[idx], 60, () => {
+        setTimeout(() => {
+          let i = texts[idx].length;
+          const cursorSpan = el.querySelector('.cursor');
+          function erase() {
+            if (i > 0) {
+              el.innerHTML = texts[idx].substring(0, i - 1);
+              if (cursorSpan) el.appendChild(cursorSpan);
+              i--;
+              setTimeout(erase, 25);
+            } else {
+              idx = (idx + 1) % texts.length;
+              setTimeout(typeLoop, 500);
             }
-            erase();
-          }, 2000);
-        });
-      }
-      typeLoop();
+          }
+          erase();
+        }, 2000);
+      });
     }
-    this.loadServices();
-    setTimeout(() => {
-      const y = document.getElementById('statYears');
-      if (y) Animations.animateCounter(y, 15);
-    }, 600);
+    typeLoop();
+  },
+
+  async loadStats() {
+    try {
+      const stats = await API.getStats();
+      const sS = document.getElementById('statServices');
+      const sR = document.getElementById('statRepairs');
+      const sRt = document.getElementById('statRating');
+      const sY = document.getElementById('statYears');
+      if (sS) sS.textContent = stats.services || 0;
+      if (sR) sR.textContent = stats.appointments || 0;
+      if (sRt) sRt.textContent = (stats.avgRating || 0).toFixed(1);
+      if (sY) Animations.animateCounter(sY, Math.min(stats.appointments || 15, 15));
+    } catch {}
   },
 
   async loadServices() {
@@ -146,6 +147,30 @@ const Home = {
       Animations.refresh();
     } catch {
       grid.innerHTML = '<div class="empty-state">Error al cargar servicios</div>';
+    }
+  },
+
+  async loadReviews() {
+    const container = document.getElementById('homeReviewsList');
+    if (!container) return;
+    try {
+      const data = await API.getReviews();
+      if (!data.reviews?.length) {
+        container.innerHTML = '<div class="empty-state">Sé el primero en dejar una reseña</div>';
+        return;
+      }
+      container.innerHTML = data.reviews.slice(0, 3).map(r => `
+        <div class="review-card review-card-mini reveal">
+          <div class="review-card-header">
+            <span class="review-card-name">${Utils.escapeHtml(r.clientName)}</span>
+            ${Utils.starsHtml(r.rating, 16)}
+          </div>
+          <p class="review-card-text">${Utils.escapeHtml(r.comment)}</p>
+        </div>
+      `).join('');
+      Animations.refresh();
+    } catch {
+      container.innerHTML = '<div class="empty-state">Sé el primero en dejar una reseña</div>';
     }
   }
 };

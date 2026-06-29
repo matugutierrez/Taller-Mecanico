@@ -1,6 +1,5 @@
 const Router = {
   _routes: {},
-  _currentView: null,
 
   route(path, viewFn) {
     this._routes[path] = viewFn;
@@ -25,49 +24,43 @@ const Router = {
     return obj;
   },
 
-  async handleRoute() {
+  handleRoute() {
     const path = this.getCurrentPath();
     const viewFn = this._routes[path];
-
     const app = document.getElementById('app');
+    if (!app) return;
+
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(l => l.classList.remove('active'));
-
     const matchingLink = document.querySelector(`.nav-link[data-route="${path === '/' ? 'home' : path.replace('/', '')}"]`);
     if (matchingLink) matchingLink.classList.add('active');
 
     if (!viewFn) {
-      app.innerHTML = `
-        <div class="error-state view">
-          <h3>Página no encontrada</h3>
-          <p>La página que buscás no existe.</p>
-          <a href="#/" class="btn-primary">Volver al inicio</a>
-        </div>`;
+      app.innerHTML = '<div class="error-state view"><h3>Página no encontrada</h3><p>La página que buscás no existe.</p><a href="#/" class="btn-primary">Volver al inicio</a></div>';
       return;
     }
 
     try {
-      app.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><p>Cargando...</p></div>';
-      const html = await viewFn(this.getParams());
-      app.innerHTML = html;
-      app.querySelectorAll('.view').forEach(el => {
-        el.addEventListener('animationend', () => { el.style.animation = ''; }, { once: true });
-      });
-      if (window.App) App.afterRender();
+      const html = viewFn(this.getParams());
+      if (html && html.then) {
+        html.then(h => {
+          app.innerHTML = h;
+          if (window.App) App.afterRender();
+        }).catch(err => {
+          app.innerHTML = `<div class="error-state view"><h3>Error al cargar</h3><p>${Utils.escapeHtml(err.message)}</p><button class="btn-primary" onclick="location.reload()">Reintentar</button></div>`;
+        });
+      } else {
+        app.innerHTML = html;
+        if (window.App) App.afterRender();
+      }
     } catch (err) {
-      console.error(err);
-      app.innerHTML = `
-        <div class="error-state view">
-          <h3>Error al cargar</h3>
-          <p>${Utils.escapeHtml(err.message)}</p>
-          <button class="btn-primary" onclick="Router.handleRoute()">Reintentar</button>
-        </div>`;
+      app.innerHTML = `<div class="error-state view"><h3>Error al cargar</h3><p>${Utils.escapeHtml(err.message)}</p><button class="btn-primary" onclick="location.reload()">Reintentar</button></div>`;
     }
   },
 
   init() {
+    this.handleRoute();
     window.addEventListener('hashchange', () => this.handleRoute());
-    window.addEventListener('load', () => this.handleRoute());
     document.addEventListener('click', (e) => {
       const link = e.target.closest('[data-route]');
       if (link) {

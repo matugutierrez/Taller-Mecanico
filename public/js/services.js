@@ -1,5 +1,5 @@
 const Services = {
-  async render(params) {
+  render(params) {
     const category = params.categoria || '';
     return `
     <div class="services-page view">

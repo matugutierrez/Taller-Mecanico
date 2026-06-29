@@ -1,5 +1,5 @@
 const FAQ = {
-  async render() {
+  render() {
     return `
     <div class="section-page view">
       <div class="section-header reveal">

@@ -1,5 +1,5 @@
 const Blog = {
-  async render(params) {
+  render(params) {
     if (params.post) {
       return `<div class="section-page view"><div class="blog-single" id="blogSingle"><div class="loading-state"><div class="loading-spinner"></div></div></div></div>`;
     }
