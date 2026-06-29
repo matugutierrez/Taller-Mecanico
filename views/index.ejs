@@ -127,8 +127,95 @@
 <!-- TOAST CONTAINER -->
 <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-<!-- MAIN APP -->
-<main id="app" class="main-content" role="main"></main>
+<!-- MAIN APP (contenido inline, JS lo realza/remplaza) -->
+<main id="app" class="main-content" role="main">
+  <section class="hero view" id="inicio">
+    <canvas id="heroCanvas" class="hero-canvas"></canvas>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge reveal revealed">
+        <span class="hero-badge-dot"></span>
+        <span>Abierto hoy · Lun-Vie 9:00-18:00</span>
+      </div>
+      <h1 class="hero-title reveal revealed" style="transition-delay:0.1s">
+        Tu auto en las<br>mejores <em>manos</em>
+      </h1>
+      <div class="hero-typing reveal revealed" style="transition-delay:0.2s" id="typingText">Diagnóstico computarizado<span class="cursor"></span></div>
+      <p class="hero-desc reveal revealed" style="transition-delay:0.25s">
+        Más de 15 años cuidando los motores de El Jagüel y zona sur.
+        Diagnóstico, reparación y mantenimiento con tecnología de punta.
+      </p>
+      <div class="hero-actions reveal revealed" style="transition-delay:0.3s">
+        <a href="#/reservar" class="btn-primary" data-route="booking">Reservar Turno</a>
+        <a href="#/servicios" class="btn-secondary" data-route="services">Ver Servicios</a>
+      </div>
+      <div class="hero-stats reveal revealed" style="transition-delay:0.35s">
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="statYears">15+</div>
+          <div class="hero-stat-label">Años de experiencia</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="statServices">0</div>
+          <div class="hero-stat-label">Servicios</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="statRepairs">0</div>
+          <div class="hero-stat-label">Reparaciones</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-number" id="statRating">0.0</div>
+          <div class="hero-stat-label">Calificación ★</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-page" id="featuredServices">
+    <div class="section-header reveal revealed">
+      <span class="section-tag">Servicios</span>
+      <h2 class="section-title">¿Qué hacemos?</h2>
+      <p class="section-desc">Ofrecemos soluciones completas para tu vehículo con equipamiento profesional.</p>
+    </div>
+    <div class="services-grid" id="homeServicesGrid">
+      <div class="service-card reveal revealed">
+        <div class="service-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3>Reparación de Motores</h3>
+        <p>Diagnóstico y reparación integral de motores nafteros y diésel.</p>
+        <a href="#/reservar" class="btn-primary" data-route="booking">Solicitar Turno</a>
+      </div>
+      <div class="service-card reveal revealed">
+        <div class="service-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3>Escaneo Computarizado</h3>
+        <p>Diagnóstico electrónico con scanners de última generación.</p>
+        <a href="#/reservar" class="btn-primary" data-route="booking">Solicitar Turno</a>
+      </div>
+      <div class="service-card reveal revealed">
+        <div class="service-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3>Electricidad del Automóvil</h3>
+        <p>Reparación de sistemas eléctricos completos.</p>
+        <a href="#/reservar" class="btn-primary" data-route="booking">Solicitar Turno</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px" class="reveal revealed">
+      <a href="#/servicios" class="btn-secondary" data-route="services">Ver todos los servicios</a>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-secondary);padding:80px 24px" id="featuredReviews">
+    <div style="max-width:var(--max-width);margin:0 auto">
+      <div class="section-header reveal revealed">
+        <span class="section-tag">Testimonios</span>
+        <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+      </div>
+      <div id="homeReviewsList" class="reviews-list" style="max-width:600px;margin:0 auto">
+        <div class="empty-state">Cargando reseñas...</div>
+      </div>
+      <div style="text-align:center;margin-top:24px" class="reveal revealed">
+        <a href="#/contacto" class="btn-primary" data-route="contact">Dejanos tu opinión</a>
+      </div>
+    </div>
+  </section>
+</main>
 
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">

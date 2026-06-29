@@ -5,27 +5,23 @@ const Home = {
       <canvas id="heroCanvas" class="hero-canvas"></canvas>
       <div class="hero-overlay"></div>
       <div class="hero-content">
-        <div class="hero-badge reveal">
+        <div class="hero-badge reveal revealed">
           <span class="hero-badge-dot"></span>
           <span>Abierto hoy · Lun-Vie 9:00-18:00</span>
         </div>
-        <h1 class="hero-title reveal" style="transition-delay:0.1s">
+        <h1 class="hero-title reveal revealed" style="transition-delay:0.1s">
           Tu auto en las<br>mejores <em>manos</em>
         </h1>
-        <div class="hero-typing reveal" style="transition-delay:0.2s" id="typingText"></div>
-        <p class="hero-desc reveal" style="transition-delay:0.25s">
+        <div class="hero-typing reveal revealed" style="transition-delay:0.2s" id="typingText"><span class="cursor"></span></div>
+        <p class="hero-desc reveal revealed" style="transition-delay:0.25s">
           Más de 15 años cuidando los motores de El Jagüel y zona sur.
           Diagnóstico, reparación y mantenimiento con tecnología de punta.
         </p>
-        <div class="hero-actions reveal" style="transition-delay:0.3s">
-          <a href="#/reservar" class="btn-primary" data-route="booking">
-            Reservar Turno
-          </a>
-          <a href="#/servicios" class="btn-secondary" data-route="services">
-            Ver Servicios
-          </a>
+        <div class="hero-actions reveal revealed" style="transition-delay:0.3s">
+          <a href="#/reservar" class="btn-primary" data-route="booking">Reservar Turno</a>
+          <a href="#/servicios" class="btn-secondary" data-route="services">Ver Servicios</a>
         </div>
-        <div class="hero-stats reveal" style="transition-delay:0.35s">
+        <div class="hero-stats reveal revealed" style="transition-delay:0.35s">
           <div class="hero-stat">
             <div class="hero-stat-number" id="statYears">15+</div>
             <div class="hero-stat-label">Años de experiencia</div>
@@ -45,12 +41,11 @@ const Home = {
         </div>
       </div>
     </section>
-
     <section class="section-page" id="featuredServices">
       <div class="section-header reveal">
         <span class="section-tag">Servicios</span>
         <h2 class="section-title">¿Qué hacemos?</h2>
-        <p class="section-desc">Ofrecemos soluciones completas para tu vehículo con equipamiento profesional y personal capacitado.</p>
+        <p class="section-desc">Ofrecemos soluciones completas para tu vehículo con equipamiento profesional.</p>
       </div>
       <div class="services-grid" id="homeServicesGrid">
         <div class="loading-state"><div class="loading-spinner"></div></div>
@@ -59,7 +54,6 @@ const Home = {
         <a href="#/servicios" class="btn-secondary" data-route="services">Ver todos los servicios</a>
       </div>
     </section>
-
     <section style="background:var(--bg-secondary);padding:80px 24px" id="featuredReviews">
       <div style="max-width:var(--max-width);margin:0 auto">
         <div class="section-header reveal">

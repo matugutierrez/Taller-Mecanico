@@ -41,20 +41,20 @@ const Router = {
     }
 
     try {
-      const html = viewFn(this.getParams());
-      if (html && html.then) {
-        html.then(h => {
-          app.innerHTML = h;
+      const result = viewFn(this.getParams());
+      if (result && result.then) {
+        result.then(h => {
+          if (h !== null) app.innerHTML = h;
           if (window.App) App.afterRender();
         }).catch(err => {
-          app.innerHTML = `<div class="error-state view"><h3>Error al cargar</h3><p>${Utils.escapeHtml(err.message)}</p><button class="btn-primary" onclick="location.reload()">Reintentar</button></div>`;
+          app.innerHTML = `<div class="error-state view"><h3>Error</h3><p>${Utils.escapeHtml(err.message)}</p><button class="btn-primary" onclick="location.reload()">Reintentar</button></div>`;
         });
       } else {
-        app.innerHTML = html;
+        if (result !== null) app.innerHTML = result;
         if (window.App) App.afterRender();
       }
     } catch (err) {
-      app.innerHTML = `<div class="error-state view"><h3>Error al cargar</h3><p>${Utils.escapeHtml(err.message)}</p><button class="btn-primary" onclick="location.reload()">Reintentar</button></div>`;
+      app.innerHTML = `<div class="error-state view"><h3>Error</h3><p>${Utils.escapeHtml(err.message)}</p><button class="btn-primary" onclick="location.reload()">Reintentar</button></div>`;
     }
   },
 
