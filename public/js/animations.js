@@ -53,7 +53,7 @@ const Animations = {
         if (p.y > h) p.y = 0;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,49,49,${p.a})`;
+        ctx.fillStyle = `rgba(59,130,246,${p.a})`;
         ctx.fill();
       });
       for (let i = 0; i < particles.length; i++) {
@@ -65,7 +65,7 @@ const Animations = {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(255,49,49,${0.08 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(59,130,246,${0.08 * (1 - dist / 120)})`;
             ctx.stroke();
           }
         }

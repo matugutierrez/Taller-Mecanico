@@ -107,7 +107,7 @@ const Search = {
     const idx = text.toLowerCase().indexOf(query);
     if (idx === -1) return Utils.escapeHtml(text);
     return Utils.escapeHtml(text.substring(0, idx)) +
-      '<strong style="color:var(--red)">' + Utils.escapeHtml(text.substring(idx, idx + query.length)) + '</strong>' +
+      '<strong style="color:var(--primary)">' + Utils.escapeHtml(text.substring(idx, idx + query.length)) + '</strong>' +
       Utils.escapeHtml(text.substring(idx + query.length));
   },
 

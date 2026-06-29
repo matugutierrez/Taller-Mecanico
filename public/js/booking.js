@@ -195,7 +195,7 @@ const Booking = {
       container.querySelectorAll('.service-card').forEach(card => {
         card.addEventListener('click', () => {
           container.querySelectorAll('.service-card').forEach(c => c.style.borderColor = '');
-          card.style.borderColor = 'var(--red)';
+          card.style.borderColor = 'var(--primary)';
           this._data.service = card.dataset.service;
         });
       });

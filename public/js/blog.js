@@ -87,7 +87,7 @@ const Blog = {
           <span>· ${post.viewCount} vistas</span>
           <span>· ${Utils.escapeHtml(post.author)}</span>
         </div>
-        ${post.tags?.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">${post.tags.map(t => `<span style="padding:4px 12px;border-radius:999px;background:var(--red-soft);color:var(--red);font-size:12px;font-weight:600">#${Utils.escapeHtml(t)}</span>`).join('')}</div>` : ''}
+        ${post.tags?.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">${post.tags.map(t => `<span style="padding:4px 12px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:600">#${Utils.escapeHtml(t)}</span>`).join('')}</div>` : ''}
         <div class="blog-single-content">${post.content}</div>
         <a href="#/blog" class="btn-secondary" style="margin-top:32px" data-route="blog">← Volver al blog</a>`;
     } catch (err) {

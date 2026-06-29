@@ -20,7 +20,7 @@ const Contact = {
             </div>
             <div>
               <h4>Teléfono / WhatsApp</h4>
-              <p><a href="https://wa.me/5491159371225" target="_blank" rel="noopener" style="color:var(--red)">+54 9 11 5937-1225</a></p>
+              <p><a href="https://wa.me/5491159371225" target="_blank" rel="noopener" style="color:var(--primary)">+54 9 11 5937-1225</a></p>
             </div>
           </div>
           <div class="contact-detail">
@@ -29,7 +29,7 @@ const Contact = {
             </div>
             <div>
               <h4>Email</h4>
-              <p><a href="mailto:matugutierrez7@gmail.com" style="color:var(--red)">matugutierrez7@gmail.com</a></p>
+              <p><a href="mailto:matugutierrez7@gmail.com" style="color:var(--primary)">matugutierrez7@gmail.com</a></p>
             </div>
           </div>
           <div class="contact-detail">

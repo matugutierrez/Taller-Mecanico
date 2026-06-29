@@ -13,6 +13,11 @@ const UI = {
     }, duration);
   },
 
+  hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) preloader.classList.add('hidden');
+  },
+
   showPreloader() {
     const preloader = document.getElementById('preloader');
     if (!preloader) return;
@@ -32,6 +37,7 @@ const UI = {
     } else {
       setTimeout(() => preloader.classList.add('hidden'), 1000);
     }
+    setTimeout(() => this.hidePreloader(), 5000);
   },
 
   initCookieConsent() {
