@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller Mecánico Premium - Servicio Automotriz de Excelencia</title>
+    <meta name="description" content="Taller mecánico de alta gama. Servicio completo de reparación y mantenimiento automotriz con tecnología de punta.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <a href="#/" class="nav-logo">
+                    <i class="fas fa-wrench"></i>
+                    <span>Taller Premium</span>
+                </a>
+                <div class="nav-toggle" id="navToggle">
+                    <span></span><span></span><span></span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#/" class="nav-link active">Inicio</a></li>
+                    <li><a href="#/servicios" class="nav-link">Servicios</a></li>
+                    <li><a href="#/galeria" class="nav-link">Galería</a></li>
+                    <li><a href="#/reservar" class="nav-link">Reservar Turno</a></li>
+                    <li><a href="#/testimonios" class="nav-link">Testimonios</a></li>
+                    <li><a href="#/contacto" class="nav-link">Contacto</a></li>
+                    <li class="nav-auth" id="navAuth">
+                        <a href="#/login" class="nav-link btn-login" id="loginBtn">Ingresar</a>
+                        <a href="#/registro" class="nav-link btn-register">Registrarse</a>
+                    </li>
+                    <li class="nav-user" id="navUser" style="display:none;">
+                        <span class="nav-user-name" id="navUserName"></span>
+                        <div class="nav-user-dropdown">
+                            <a href="#/perfil">Mi Perfil</a>
+                            <a href="#/mis-turnos">Mis Turnos</a>
+                            <a href="#" id="adminLink" style="display:none;">Panel Admin</a>
+                            <a href="#" id="logoutBtn">Cerrar Sesión</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main id="main-content">
+            <div id="loading-spinner" class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+            <div id="page-content"></div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-grid">
+                    <div class="footer-about">
+                        <h3><i class="fas fa-wrench"></i> Taller Premium</h3>
+                        <p>Más de 20 años de experiencia brindando el mejor servicio automotriz con tecnología alemana y mano de obra calificada.</p>
+                        <div class="footer-social">
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Servicios</h4>
+                        <ul>
+                            <li><a href="#/servicios">Cambio de Aceite</a></li>
+                            <li><a href="#/servicios">Diagnóstico</a></li>
+                            <li><a href="#/servicios">Frenos</a></li>
+                            <li><a href="#/servicios">Suspensión</a></li>
+                            <li><a href="#/servicios">Motor</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Horarios</h4>
+                        <ul class="footer-hours">
+                            <li><span>Lun - Vie:</span> 8:00 - 18:00</li>
+                            <li><span>Sábados:</span> 8:00 - 13:00</li>
+                            <li><span>Domingos:</span> Cerrado</li>
+                            <li class="footer-urgent"><i class="fas fa-phone-alt"></i> Urgencias 24/7: +54 11 1234-5678</li>
+                        </ul>
+                    </div>
+                    <div class="footer-contact">
+                        <h4>Contacto</h4>
+                        <ul>
+                            <li><i class="fas fa-map-marker-alt"></i> Av. Corrientes 1234, CABA</li>
+                            <li><i class="fas fa-phone"></i> +54 11 1234-5678</li>
+                            <li><i class="fas fa-envelope"></i> info@tallerpremium.com</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2024 Taller Premium. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
