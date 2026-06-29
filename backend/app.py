@@ -1,145 +1,95 @@
 import os
-import sys
-from flask import Flask, send_from_directory, jsonify
-from dotenv import load_dotenv
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
-load_dotenv()
+app = Flask(__name__, template_folder='templates', static_folder='../static', static_url_path='/static')
+app.secret_key = 'taller-mecanico-secret-key-2024'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///taller.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+db = SQLAlchemy(app)
 
 
-def create_app(config_name=None):
-    app = Flask(__name__, static_folder=None)
+class ContactMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20))
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    read = db.Column(db.Boolean, default=False)
 
-    if not config_name:
-        config_name = os.getenv('FLASK_ENV', 'development')
 
-    from backend.config import config_by_name
-    app.config.from_object(config_by_name.get(config_name, config_by_name['development']))
+with app.app_context():
+    db.create_all()
 
-    from backend.extensions import db, jwt, ma, cors, mail
-    db.init_app(app)
-    jwt.init_app(app)
-    ma.init_app(app)
-    cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
-    mail.init_app(app)
 
-    from backend.routes import blueprints
-    for bp, url_prefix in blueprints:
-        app.register_blueprint(bp, url_prefix=url_prefix)
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-    @app.route('/uploads/<path:filename>')
-    def uploaded_file(filename):
-        upload_dir = app.config['UPLOAD_FOLDER']
-        return send_from_directory(upload_dir, filename)
 
-    @app.route('/api/health')
-    def health_check():
-        return jsonify({
-            'status': 'healthy',
-            'app': 'Taller Mecanico API',
-            'version': '2.0.0'
-        })
+@app.route('/api/contact', methods=['POST'])
+def contact():
+    data = request.get_json()
+    msg = ContactMessage(
+        name=data.get('name'),
+        email=data.get('email'),
+        phone=data.get('phone', ''),
+        message=data.get('message')
+    )
+    db.session.add(msg)
+    db.session.commit()
+    return jsonify({'ok': True, 'message': 'Mensaje enviado correctamente'})
 
-    @jwt.unauthorized_loader
-    def unauthorized_response(callback):
-        return jsonify({'error': 'Missing or invalid token'}), 401
 
-    @jwt.invalid_token_loader
-    def invalid_token_response(callback):
-        return jsonify({'error': 'Invalid token'}), 401
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        data = request.get_json() if request.is_json else request.form
+        if data.get('username') == 'admin' and data.get('password') == 'taller2024':
+            session['admin'] = True
+            return jsonify({'ok': True})
+        return jsonify({'ok': False, 'message': 'Credenciales incorrectas'}), 401
+    return render_template('login.html')
 
-    @jwt.expired_token_loader
-    def expired_token_response(jwt_header, jwt_payload):
-        return jsonify({'error': 'Token has expired'}), 401
 
-    @app.errorhandler(404)
-    def not_found(error):
-        return jsonify({'error': 'Not found'}), 404
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin', None)
+    return redirect(url_for('admin_login'))
 
-    @app.errorhandler(500)
-    def internal_error(error):
-        return jsonify({'error': 'Internal server error'}), 500
 
-    with app.app_context():
-        from backend.models import User, Service, Appointment, Review, ContactMessage, GalleryImage, Invoice
-        db.create_all()
+@app.route('/admin')
+def admin_panel():
+    if not session.get('admin'):
+        return redirect(url_for('admin_login'))
+    messages = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
+    return render_template('admin.html', messages=messages)
 
-        admin = User.query.filter_by(email='admin@taller.com').first()
-        if not admin:
-            admin = User(
-                email='admin@taller.com',
-                username='admin',
-                full_name='Administrador',
-                phone='+54 11 1234-5678',
-                role='admin',
-                is_active=True,
-                email_verified=True
-            )
-            admin.set_password('Admin1234')
-            db.session.add(admin)
-            db.session.commit()
 
-        if Service.query.count() == 0:
-            seed_services = [
-                Service(name='Cambio de Aceite', slug='cambio-de-aceite',
-                        description='Cambio de aceite sintético y filtro de alta calidad. Incluye revisión de niveles y lubricación general.',
-                        short_description='Servicio completo de cambio de aceite sintético con filtro incluido.',
-                        category='Mantenimiento', price=4500, duration_minutes=45,
-                        icon='oil', is_featured=True, sort_order=1),
-                Service(name='Diagnóstico Computarizado', slug='diagnostico-computarizado',
-                        description='Diagnóstico electrónico completo con escáner de última generación. Detectamos fallas en motor, transmisión, frenos ABS, airbags y más.',
-                        short_description='Escáner profesional para diagnóstico preciso de fallas electrónicas.',
-                        category='Diagnóstico', price=3500, duration_minutes=60,
-                        icon='diagnostic', is_featured=True, sort_order=2),
-                Service(name='Frenos', slug='frenos',
-                        description='Reemplazo de pastillas y discos de freno. Rectificación de discos, revisión de pinzas y líquido de frenos.',
-                        short_description='Sistema de frenos completo: pastillas, discos, rectificación y líquido.',
-                        category='Frenos', price=8500, duration_minutes=120,
-                        icon='brakes', is_featured=True, sort_order=3),
-                Service(name='Alineación y Balanceo', slug='alineacion-y-balanceo',
-                        description='Alineación 3D computarizada y balanceo dinámico de precisión. Incluye rotación de neumáticos.',
-                        short_description='Alineación 3D y balanceo dinámico con rotación de neumáticos.',
-                        category='Suspensión', price=3200, duration_minutes=60,
-                        icon='tires', is_featured=True, sort_order=4),
-                Service(name='Reparación de Motor', slug='reparacion-de-motor',
-                        description='Reparación general de motor, rectificación, cambio de pistones, anillos, válvulas, juntas y distribución completa.',
-                        short_description='Reparación integral de motores nafteros y diesel.',
-                        category='Motor', price=45000, duration_minutes=480,
-                        icon='engine', is_featured=False, sort_order=5),
-                Service(name='Transmisión y Embrague', slug='transmision-y-embrague',
-                        description='Cambio de embrague completo, reparación de cajas manuales y automáticas. Incluye volante bimasa.',
-                        short_description='Reparación y cambio de embrague y transmisión.',
-                        category='Transmisión', price=25000, duration_minutes=360,
-                        icon='gearbox', is_featured=False, sort_order=6),
-                Service(name='Suspensión', slug='suspension',
-                        description='Cambio de amortiguadores, espirales, bujes y parrillas. Regeneración de suspensión completa.',
-                        short_description='Sistema de suspensión completo: amortiguadores, espirales y bujes.',
-                        category='Suspensión', price=12000, duration_minutes=180,
-                        icon='suspension', is_featured=False, sort_order=7),
-                Service(name='Aire Acondicionado', slug='aire-acondicionado',
-                        description='Carga de gas, reparación de fugas, cambio de compresor, limpieza de evaporador y filtro de habitáculo.',
-                        short_description='Servicio completo de aire acondicionado automotor.',
-                        category='Confort', price=6500, duration_minutes=90,
-                        icon='ac', is_featured=True, sort_order=8),
-                Service(name='Electricidad del Automóvil', slug='electricidad',
-                        description='Reparación de sistemas eléctricos, alternador, arranque, sensores, centrales y multiplexado.',
-                        short_description='Diagnóstico y reparación de sistemas eléctricos completos.',
-                        category='Eléctrico', price=5500, duration_minutes=90,
-                        icon='electrical', is_featured=False, sort_order=9),
-                Service(name='Escaneo y Programación', slug='escaneo-y-programacion',
-                        description='Programación de centrales, codificación de módulos, actualización de software y adaptaciones.',
-                        short_description='Programación y codificación avanzada de módulos electrónicos.',
-                        category='Diagnóstico', price=5000, duration_minutes=60,
-                        icon='scan', is_featured=False, sort_order=10),
-            ]
-            db.session.add_all(seed_services)
-            db.session.commit()
+@app.route('/api/admin/messages/<int:msg_id>/read', methods=['POST'])
+def mark_read(msg_id):
+    if not session.get('admin'):
+        return jsonify({'ok': False}), 401
+    msg = ContactMessage.query.get_or_404(msg_id)
+    msg.read = True
+    db.session.commit()
+    return jsonify({'ok': True})
 
-    return app
+
+@app.route('/api/admin/messages/<int:msg_id>', methods=['DELETE'])
+def delete_message(msg_id):
+    if not session.get('admin'):
+        return jsonify({'ok': False}), 401
+    msg = ContactMessage.query.get_or_404(msg_id)
+    db.session.delete(msg)
+    db.session.commit()
+    return jsonify({'ok': True})
 
 
 if __name__ == '__main__':
-    app = create_app()
-    port = int(os.getenv('PORT', 5000))
+    port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)

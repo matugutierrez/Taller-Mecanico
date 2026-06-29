@@ -31,9 +31,5 @@ instance/
 Thumbs.db
 *.log
 
-# Uploads
-backend/uploads/*
-!backend/uploads/.gitkeep
-
 # Node (if any)
 node_modules/

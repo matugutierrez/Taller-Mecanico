@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Admin - Taller Mecánico{% endblock %}
+{% block content %}
+<header class="admin-header">
+    <div class="admin-header-inner">
+        <h1><i class="fas fa-wrench"></i> Panel de Administración</h1>
+        <a href="/admin/logout" class="btn btn-outline">Cerrar Sesión</a>
+    </div>
+</header>
+<main class="admin-main">
+    <h2>Mensajes Recibidos</h2>
+    <div class="messages-grid">
+        {% for msg in messages %}
+        <div class="message-card {% if not msg.read %}unread{% endif %}" data-id="{{ msg.id }}">
+            <div class="message-header">
+                <strong>{{ msg.name }}</strong>
+                <span class="message-date">{{ msg.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+            </div>
+            <div class="message-body">
+                <p><i class="fas fa-envelope"></i> {{ msg.email }}</p>
+                {% if msg.phone %}<p><i class="fas fa-phone"></i> {{ msg.phone }}</p>{% endif %}
+                <p class="message-text">{{ msg.message }}</p>
+            </div>
+            <div class="message-actions">
+                {% if not msg.read %}
+                <button class="btn btn-sm btn-primary mark-read" data-id="{{ msg.id }}">Marcar leído</button>
+                {% endif %}
+                <button class="btn btn-sm btn-danger delete-msg" data-id="{{ msg.id }}">Eliminar</button>
+            </div>
+        </div>
+        {% else %}
+        <p class="no-messages">No hay mensajes aún.</p>
+        {% endfor %}
+    </div>
+</main>
+<script>
+document.querySelectorAll('.mark-read').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        await fetch('/api/admin/messages/' + btn.dataset.id + '/read', {method: 'POST'});
+        btn.closest('.message-card').classList.remove('unread');
+        btn.remove();
+    });
+});
+document.querySelectorAll('.delete-msg').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        if (!confirm('¿Eliminar este mensaje?')) return;
+        await fetch('/api/admin/messages/' + btn.dataset.id, {method: 'DELETE'});
+        btn.closest('.message-card').remove();
+    });
+});
+</script>
+{% endblock %}
