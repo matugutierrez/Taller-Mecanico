@@ -4,7 +4,7 @@
 <header class="admin-header">
     <div class="admin-header-inner">
         <h1><i class="fas fa-wrench"></i> Panel de Administración</h1>
-        <a href="/admin/logout" class="btn btn-outline">Cerrar Sesión</a>
+        <a href="/admin/logout" class="btn btn-outline"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
     </div>
 </header>
 <main class="admin-main">
@@ -23,9 +23,9 @@
             </div>
             <div class="message-actions">
                 {% if not msg.read %}
-                <button class="btn btn-sm btn-primary mark-read" data-id="{{ msg.id }}">Marcar leído</button>
+                <button class="btn btn-sm btn-primary mark-read" data-id="{{ msg.id }}"><i class="fas fa-check"></i> Leído</button>
                 {% endif %}
-                <button class="btn btn-sm btn-danger delete-msg" data-id="{{ msg.id }}">Eliminar</button>
+                <button class="btn btn-sm btn-danger delete-msg" data-id="{{ msg.id }}"><i class="fas fa-trash"></i> Eliminar</button>
             </div>
         </div>
         {% else %}

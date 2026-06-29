@@ -45,9 +45,10 @@ window.addEventListener('load', updateActiveLink);
 // Navbar background on scroll
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
   navbar.style.background = window.scrollY > 50
-    ? 'rgba(15,15,15,.95)'
-    : 'rgba(15,15,15,.85)';
+    ? 'rgba(8,8,8,.96)'
+    : 'rgba(8,8,8,.92)';
 });
 
 // Contact form
@@ -62,7 +63,7 @@ if (contactForm) {
     msgDiv.className = 'form-message';
     msgDiv.style.display = 'none';
     btn.disabled = true;
-    btn.textContent = 'Enviando...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
     try {
       const res = await fetch('/api/contact', {
@@ -93,7 +94,7 @@ if (contactForm) {
 
     msgDiv.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = 'Enviar Mensaje';
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Mensaje';
   });
 }
 

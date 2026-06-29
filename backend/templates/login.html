@@ -18,7 +18,7 @@
                 <input type="password" id="password" name="password" required>
             </div>
             <div id="loginError" class="error-msg"></div>
-            <button type="submit" class="btn btn-primary btn-full">Ingresar</button>
+            <button type="submit" class="btn btn-primary btn-full"><i class="fas fa-lock"></i> Ingresar</button>
         </form>
     </div>
 </div>
@@ -29,7 +29,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const error = document.getElementById('loginError');
     const btn = form.querySelector('button');
     btn.disabled = true;
-    btn.textContent = 'Ingresando...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ingresando...';
     try {
         const res = await fetch('/admin/login', {
             method: 'POST',
@@ -46,7 +46,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         error.textContent = 'Error de conexión';
     }
     btn.disabled = false;
-    btn.textContent = 'Ingresar';
+    btn.innerHTML = '<i class="fas fa-lock"></i> Ingresar';
 });
 </script>
 {% endblock %}
